@@ -1,4 +1,7 @@
-url = 'http://35.2.95.166:8080/shot.jpg';
+%This requires the IP webcam app on your phone. Download it and 
+%click start server on the bottom. There will be an IPv4 webadress at the
+%bottom of the screen, replace the YOURIP part with that address.
+url = 'http://YOURIP/shot.jpg';
 ss  = imread(url);
 fh = image(ss);
 while(1)
