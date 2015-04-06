@@ -29,7 +29,7 @@ You can use "git" to do this simply by using the following git command: "git clo
 3. Navigate then to the directory which includes the AeroQuad software ("AeroQuad,AeroQuad32,BuildAQ32,Libmaple,...").
 4. Make Libmaple with "make -C Libmaple/libmaple library".
 5. Make AQ with "make -C BuildAQ32".
-6. Note that the needed binary is in "BuildAQ32/objSTM32/AeroQuad32/AeroQuadMain.bin"
+6. Note that the needed binary is in "BuildAQ32/objSTM32/AeroQuad32/[AeroQuadMain.bin](BuildAQ32/objSTM32/AeroQuad32/AeroQuadMain.bin?raw=true)"
 7. Reset the board to DFU mode by "echo 1EAF > /dev/ttyACM0"
 8. Download the binary by "dfu-util -d 0483:df11 -a 0 -s 0x8010000 -D 9. BuildAQ32/objSTM32/AeroQuad32/AeroQuadMain.bin". You will probably need to run it with sudo or as the root user.
 9. Hit the reset button on the AeroQuad32 board. (If you have the patched dfu-util "dfu-util -d 0483:df11 -a 0 -L" will reset the board out of DFU.)
