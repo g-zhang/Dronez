@@ -1,5 +1,5 @@
 objSTM32/dummy/../AeroQuad32/MapleCompatibility/EEPROM.o: \
- /home/gordon/AeroQuad/AeroQuad32/MapleCompatibility/EEPROM.cpp \
+ /home/gordon/Dronez/AeroQuad/AeroQuad32/MapleCompatibility/EEPROM.cpp \
  ../Libmaple/libmaple/wirish/wirish.h \
  ../Libmaple/libmaple/libmaple/libmaple.h \
  ../Libmaple/libmaple/libmaple/libmaple_types.h \
@@ -50,8 +50,8 @@ objSTM32/dummy/../AeroQuad32/MapleCompatibility/EEPROM.o: \
  ../Libmaple/libmaple/wirish/HardwareTimer.h \
  ../Libmaple/libmaple/wirish/usb_serial.h \
  ../Libmaple/libmaple/wirish/Print.h \
- /home/gordon/AeroQuad/AeroQuad32/MapleCompatibility/EEPROM.h \
- /home/gordon/AeroQuad/AeroQuad32/MapleCompatibility/flash_stm32.h
+ /home/gordon/Dronez/AeroQuad/AeroQuad32/MapleCompatibility/EEPROM.h \
+ /home/gordon/Dronez/AeroQuad/AeroQuad32/MapleCompatibility/flash_stm32.h
 
 ../Libmaple/libmaple/wirish/wirish.h:
 
@@ -157,6 +157,6 @@ objSTM32/dummy/../AeroQuad32/MapleCompatibility/EEPROM.o: \
 
 ../Libmaple/libmaple/wirish/Print.h:
 
-/home/gordon/AeroQuad/AeroQuad32/MapleCompatibility/EEPROM.h:
+/home/gordon/Dronez/AeroQuad/AeroQuad32/MapleCompatibility/EEPROM.h:
 
-/home/gordon/AeroQuad/AeroQuad32/MapleCompatibility/flash_stm32.h:
+/home/gordon/Dronez/AeroQuad/AeroQuad32/MapleCompatibility/flash_stm32.h:
