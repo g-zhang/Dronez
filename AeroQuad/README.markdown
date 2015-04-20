@@ -16,7 +16,7 @@ Preparation:
     ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ENV{ID_MM_DEVICE_IGNORE}="1"
     ```
 
-2. Download version 2011.09-69 of CodeSourcery ARM EABI Lite and install it (Download link). Newer versions of the toolchain seem to cause problems at the moment.
+2. Download version 2011.09-69 of CodeSourcery ARM EABI Lite and install it ([Download link](https://sourcery.mentor.com/public/gnu_toolchain/arm-none-eabi/arm-2011.09-69-arm-none-eabi-i686-pc-linux-gnu.tar.bz2)). Newer versions of the toolchain seem to cause problems at the moment.
 3. Make sure you have make (and preferably git) installed. Also make sure you have dfu-util installed. Most distributions provide a package, but if not you can obtain is here: http://dfu-util.gnumonks.org/
 4. Add the codesourcery "bin" directory to your path "export PATH=$PATH:/path/to/sourcery/bin/" (you may want to make this permanent by editing .profile or whatever).
 
