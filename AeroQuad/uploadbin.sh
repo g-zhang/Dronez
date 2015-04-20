@@ -1,4 +1,4 @@
-now=$(date +"%m_%d_%Y")
+now=$(date +"%c")
 msg="AQ Binary Updated by Script on $now"
 
 git add "BuildAQ32/objSTM32/AeroQuad32/AeroQuadMain.bin"
