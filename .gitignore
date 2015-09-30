@@ -1,2 +1,4 @@
 #ignore compiled AQ32 Binaries
-/Aeroquad/BuildAQ32
+/AeroQuad/BuildAQ32/.dep/
+/AeroQuad/BuildAQ32/objSTM32/
+
