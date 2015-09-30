@@ -156,7 +156,7 @@ void readSerialCommand() {
       readFloatSerial();
       accelScaleFactor[ZAXIS] = readFloatSerial();
       readFloatSerial();
-      computeAccelBias();    
+      computeAccelBias();
       storeSensorsZeroToEEPROM();
       break;
 
@@ -293,6 +293,22 @@ void readSerialCommand() {
       else
         fastTransfer = OFF;
       break;
+
+    case 'T':
+      switch ((int)readFloatSerial()) {
+      case 0:
+        RPiMode = 'M';
+        break;
+
+      case 1:
+        RPiMode = 'A';
+        break;
+
+      case 2:
+        RPiMode = 'L';
+        break;
+      }
+      break;
     }
   }
 }
@@ -357,7 +373,7 @@ float getHeading()
 {
   #if defined(HeadingMagHold) || defined(AeroQuadMega_CHR6DM) || defined(APM_OP_CHR6DM)
     float heading = trueNorthHeading;
-    if (heading < 0) { 
+    if (heading < 0) {
       heading += (2.0 * M_PI);
     }
     return heading;
@@ -659,23 +675,28 @@ void sendSerialTelemetry() {
       PrintValueComma(gpsData.idlecount);
     #else
       PrintDummyValues(11);
-    #endif    
+    #endif
     SERIAL_PRINTLN();
     break;
- 
-  case 'z': // Send all Altitude data 
-    #if defined (AltitudeHoldBaro) 
-      PrintValueComma(getBaroAltitude()); 
+
+  case 'z': // Send all Altitude data
+    #if defined (AltitudeHoldBaro)
+      PrintValueComma(getBaroAltitude());
     #else
       PrintValueComma(0);
-    #endif 
-    #if defined (AltitudeHoldRangeFinder) 
+    #endif
+    #if defined (AltitudeHoldRangeFinder)
       SERIAL_PRINTLN(rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX]);
     #else
-      SERIAL_PRINTLN(0); 
-    #endif 
+      SERIAL_PRINTLN(0);
+    #endif
     break;
-    
+
+  case 'w':
+    SERIAL_PRINTLN(RPiMode);
+    queryType = 'X';
+    break;
+
   case '$': // send BatteryMonitor voltage/current readings
     #if defined (BattMonitor)
       PrintValueComma((float)batteryData[0].voltage/100.0); // voltage internally stored at 10mV:s
@@ -690,7 +711,7 @@ void sendSerialTelemetry() {
     #endif
     SERIAL_PRINTLN();
     break;
-    
+
   case '%': // send RSSI
     #if defined (UseAnalogRSSIReader) || defined (UseEzUHFRSSIReader) || defined (UseSBUSRSSIReader)
       SERIAL_PRINTLN(rssiRawValue);
@@ -879,7 +900,7 @@ void fastTelemetry()
 #endif // BinaryWrite
 
 void printVehicleState(const char *sensorName, unsigned long state, const char *message) {
-  
+
   SERIAL_PRINT(sensorName);
   SERIAL_PRINT(": ");
   if (!(vehicleState & state)) {

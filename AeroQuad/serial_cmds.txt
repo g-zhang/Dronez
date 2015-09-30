@@ -1,0 +1,7 @@
+free chars available for serial commands (case sensitive):
+w - Read flightmode val
+Q
+R
+S
+T - Set flightmode val
+Y
