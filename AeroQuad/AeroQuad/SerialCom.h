@@ -693,7 +693,11 @@ void sendSerialTelemetry() {
     break;
 
   case 'w':
-    SERIAL_PRINTLN(RPiMode);
+    PrintValueComma(RPiMode);
+    PrintValueComma(RPiHeading);
+    PrintValueComma(RPiAltitude);
+    PrintValueComma(RPiXAXIS);
+    SERIAL_PRINTLN();
     queryType = 'X';
     break;
 

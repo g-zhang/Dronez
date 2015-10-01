@@ -49,6 +49,11 @@
 
   char RPiMode = AUTO_MODE;
 
+  //Control variables
+  int RPiXAXIS = 1500;
+  float RPiHeading = 0.0;
+  float RPiAltitude = 0.0;
+
 //////////////////////////////////////////////////////
 
 #endif
