@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/connor/droneProj/roadDetection/roadEx.cpp
+opencv2/imgcodecs.hpp
+/home/connor/droneProj/roadDetection/opencv2/imgcodecs.hpp
+opencv2/highgui/highgui.hpp
+/home/connor/droneProj/roadDetection/opencv2/highgui/highgui.hpp
+opencv2/imgproc/imgproc.hpp
+/home/connor/droneProj/roadDetection/opencv2/imgproc/imgproc.hpp
+iostream
+-
+stdio.h
+-
+
