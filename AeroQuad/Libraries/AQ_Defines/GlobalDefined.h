@@ -45,13 +45,15 @@
  */
   #define MANUAL_MODE 'M'
   #define AUTO_MODE 'A'
-  #define LANDING_MODE 'L'
+  #define AUTO_MODE2 'B'
 
-  char RPiMode = AUTO_MODE;
+  char RPiMode = MANUAL_MODE;
 
   //Control variables
-  int RPiXAXIS = 1500;
-  float RPiHeading = 0.0;
+  int RPiPITCH = 1500;
+  int RPiROLL = 1500;
+
+  float RPiHeading = 0.0; //radians
   float RPiAltitude = 0.0;
 
 //////////////////////////////////////////////////////

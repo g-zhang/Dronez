@@ -3,19 +3,19 @@
   www.AeroQuad.com
   Copyright (c) 2012 Ted Carancho.  All rights reserved.
   An Open Source Arduino based multicopter.
- 
-  This program is free software: you can redistribute it and/or modify 
-  it under the terms of the GNU General Public License as published by 
-  the Free Software Foundation, either version 3 of the License, or 
-  (at your option) any later version. 
- 
-  This program is distributed in the hope that it will be useful, 
-  but WITHOUT ANY WARRANTY; without even the implied warranty of 
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-  GNU General Public License for more details. 
- 
-  You should have received a copy of the GNU General Public License 
-  along with this program. If not, see <http://www.gnu.org/licenses/>. 
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -30,7 +30,7 @@ unsigned long headingTime = micros();
 /**
  * processHeading
  *
- * This function will calculate the craft heading correction depending 
+ * This function will calculate the craft heading correction depending
  * of the users command. Heading correction is process with the gyro
  * or a magnetometer
  */
@@ -58,17 +58,17 @@ void processHeading()
     }
 
     // Apply heading hold only when throttle high enough to start flight
-    if (receiverCommand[THROTTLE] > MINCHECK ) { 
-      
+    if (receiverCommand[THROTTLE] > MINCHECK ) {
+
       #if defined (UseGPSNavigator)
-        if (( (receiverCommand[ZAXIS] + gpsYawAxisCorrection) > (MIDCOMMAND + 25)) || 
+        if (( (receiverCommand[ZAXIS] + gpsYawAxisCorrection) > (MIDCOMMAND + 25)) ||
             ( (receiverCommand[ZAXIS] + gpsYawAxisCorrection) < (MIDCOMMAND - 25))) {
       #else
-        if ((receiverCommand[ZAXIS] > (MIDCOMMAND + 25)) || 
+        if ((receiverCommand[ZAXIS] > (MIDCOMMAND + 25)) ||
             (receiverCommand[ZAXIS] < (MIDCOMMAND - 25))) {
       #endif
-      
-        
+
+
         // If commanding yaw, turn off heading hold and store latest heading
         setHeading = heading;
         headingHold = 0;
@@ -105,20 +105,18 @@ void processHeading()
     }
   }
   // NEW SI Version
-  #if defined (UseGPSNavigator) 
+  #if defined (UseGPSNavigator)
     float receiverSiData = (receiverCommand[ZAXIS] - receiverZero[ZAXIS] + gpsYawAxisCorrection) * (2.5 * PWM2RAD);
   #else
     float receiverSiData = (receiverCommand[ZAXIS] - receiverZero[ZAXIS]) * (2.5 * PWM2RAD);
   #endif
-  
+
+  //set the heading to Rpi commanded when when in RPi mode
+  if(RPiMode == AUTO_MODE) {
+    receiverSiData = RPiHeading;
+  }
   const float commandedYaw = constrain(receiverSiData + radians(headingHold), -PI, PI);
   motorAxisCommandYaw = updatePID(commandedYaw, gyroRate[ZAXIS], &PID[ZAXIS_PID_IDX]);
 }
 
 #endif
-
-
-
-
-
-

@@ -1,5 +1,7 @@
 free chars available for serial commands (case sensitive):
 w - Read flightmode val
+RPiMode, RPiHeading, RPiAltitude, RPiPITCH, RPiROLL, battvolt, battamp, battused, gyrox, gyroy, gyroz, accelx, accely, accelz, magx, magy, magz, baroalt, altholdstate, heading,
+20 vals
 Q
 R
 S

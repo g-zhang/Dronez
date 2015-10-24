@@ -3,19 +3,19 @@
   www.AeroQuad.com
   Copyright (c) 2012 Ted Carancho.  All rights reserved.
   An Open Source Arduino based multicopter.
- 
-  This program is free software: you can redistribute it and/or modify 
-  it under the terms of the GNU General Public License as published by 
-  the Free Software Foundation, either version 3 of the License, or 
-  (at your option) any later version. 
 
-  This program is distributed in the hope that it will be useful, 
-  but WITHOUT ANY WARRANTY; without even the implied warranty of 
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-  GNU General Public License for more details. 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-  You should have received a copy of the GNU General Public License 
-  along with this program. If not, see <http://www.gnu.org/licenses/>. 
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef _AEROQUAD_RECEIVER_H_
@@ -50,7 +50,7 @@ float receiverSmoothFactor[MAX_NB_CHANNEL] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.
 int channelCal;
 
 void initializeReceiverParam(int nbChannel = 6) {
-  
+
   lastReceiverChannel = nbChannel;
 
   receiverCommand[XAXIS] = 1500;
@@ -63,28 +63,28 @@ void initializeReceiverParam(int nbChannel = 6) {
   receiverCommand[AUX3] = 1000;
   receiverCommand[AUX4] = 1000;
   receiverCommand[AUX5] = 1000;
-  
+
   for (byte channel = XAXIS; channel < lastReceiverChannel; channel++) {
     receiverCommandSmooth[channel] = 1.0;
   }
   for (byte channel = XAXIS; channel < THROTTLE; channel++) {
     receiverZero[channel] = 1500;
   }
-	
+
   for (byte channel = XAXIS; channel < lastReceiverChannel; channel++) {
     receiverSlope[channel] = 1;
-  }	
+  }
   for (byte channel = XAXIS; channel < lastReceiverChannel; channel++) {
     receiverOffset[channel] = 1;
   }
   for (byte channel = XAXIS; channel < lastReceiverChannel; channel++) {
-    receiverSmoothFactor[channel] = 1; 
+    receiverSmoothFactor[channel] = 1;
   }
 }
-  
-int getRawChannelValue(byte channel);  
+
+int getRawChannelValue(byte channel);
 void readReceiver();
-  
+
 void readReceiver()
 {
   for(byte channel = XAXIS; channel < lastReceiverChannel; channel++) {
@@ -94,26 +94,31 @@ void readReceiver()
     // Smooth the flight control receiver inputs
     receiverCommandSmooth[channel] = filterSmooth(receiverData[channel], receiverCommandSmooth[channel], receiverSmoothFactor[channel]);
   }
-  
+
   // Reduce receiver commands using receiverXmitFactor and center around 1500
   for (byte channel = XAXIS; channel < THROTTLE; channel++) {
     receiverCommand[channel] = ((receiverCommandSmooth[channel] - receiverZero[channel]) * receiverXmitFactor) + receiverZero[channel];
-  }	
+  }
   // No xmitFactor reduction applied for throttle, mode and AUX
   for (byte channel = THROTTLE; channel < lastReceiverChannel; channel++) {
     receiverCommand[channel] = receiverCommandSmooth[channel];
+  }
+
+  //set custom receiver values when in auto mode
+  if(RPiMode == AUTO_MODE) {
+    //set our roll
+    receiverCommand[XAXIS] = RPiROLL;
+    //set our pitch
+    receiverCommand[YAXIS] = RPiPITCH;
   }
 }
 
 
 void setChannelValue(byte channel,int value);
-  
+
 // return the smoothed & scaled number of radians/sec in stick movement - zero centered
 const float getReceiverSIData(byte channel) {
   return ((receiverCommand[channel] - receiverZero[channel]) * (2.5 * PWM2RAD));  // +/- 2.5RPS 50% of full rate
 }
 
 #endif
-
-
-

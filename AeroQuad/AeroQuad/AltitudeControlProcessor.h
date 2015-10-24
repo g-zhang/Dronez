@@ -3,19 +3,19 @@
   www.AeroQuad.com
   Copyright (c) 2012 Ted Carancho.  All rights reserved.
   An Open Source Arduino based multicopter.
- 
-  This program is free software: you can redistribute it and/or modify 
-  it under the terms of the GNU General Public License as published by 
-  the Free Software Foundation, either version 3 of the License, or 
-  (at your option) any later version. 
- 
-  This program is distributed in the hope that it will be useful, 
-  but WITHOUT ANY WARRANTY; without even the implied warranty of 
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-  GNU General Public License for more details. 
- 
-  You should have received a copy of the GNU General Public License 
-  along with this program. If not, see <http://www.gnu.org/licenses/>. 
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 // FlightControl.pde is responsible for combining sensor measurements and
@@ -37,9 +37,9 @@
 
 /**
  * processAltitudeHold
- * 
- * This function is responsible to process the throttle correction 
- * to keep the current altitude if selected by the user 
+ *
+ * This function is responsible to process the throttle correction
+ * to keep the current altitude if selected by the user
  */
 void processAltitudeHold()
 {
@@ -48,6 +48,11 @@ void processAltitudeHold()
   // http://aeroquad.com/showthread.php?792-Problems-with-BMP085-I2C-barometer
   // Thanks to Sherbakov for his work in Z Axis dampening
   // http://aeroquad.com/showthread.php?359-Stable-flight-logic...&p=10325&viewfull=1#post10325
+
+  //turn on altitudehold when set set to auto mode
+  if(RPiMode == AUTO_MODE) {
+    altitudeHoldState = ON;
+  }
 
   if (altitudeHoldState == ON) {
     int altitudeHoldThrottleCorrection = INVALID_THROTTLE_CORRECTION;
@@ -66,24 +71,24 @@ void processAltitudeHold()
         altitudeHoldThrottleCorrection = updatePID(baroAltitudeToHoldTarget, getBaroAltitude(), &PID[BARO_ALTITUDE_HOLD_PID_IDX]);
         altitudeHoldThrottleCorrection = constrain(altitudeHoldThrottleCorrection, minThrottleAdjust, maxThrottleAdjust);
       }
-    #endif        
+    #endif
     if (altitudeHoldThrottleCorrection == INVALID_THROTTLE_CORRECTION) {
       throttle = receiverCommand[THROTTLE];
       return;
     }
-    
+
     // ZDAMPENING COMPUTATIONS
     #if defined AltitudeHoldBaro || defined AltitudeHoldRangeFinder
       float zDampeningThrottleCorrection = -updatePID(0.0, estimatedZVelocity, &PID[ZDAMPENING_PID_IDX]);
       zDampeningThrottleCorrection = constrain(zDampeningThrottleCorrection, minThrottleAdjust, maxThrottleAdjust);
     #endif
 
-    
+
     if (abs(altitudeHoldThrottle - receiverCommand[THROTTLE]) > altitudeHoldPanicStickMovement) {
       altitudeHoldState = ALTPANIC; // too rapid of stick movement so PANIC out of ALTHOLD
-    } 
+    }
     else {
-      
+
       if (receiverCommand[THROTTLE] > (altitudeHoldThrottle + altitudeHoldBump)) { // AKA changed to use holdThrottle + ALTBUMP - (was MAXCHECK) above 1900
         #if defined AltitudeHoldBaro
           baroAltitudeToHoldTarget += ALTITUDE_BUMP_SPEED;
@@ -95,7 +100,7 @@ void processAltitudeHold()
           }
         #endif
       }
-      
+
       if (receiverCommand[THROTTLE] < (altitudeHoldThrottle - altitudeHoldBump)) { // AKA change to use holdThorrle - ALTBUMP - (was MINCHECK) below 1100
         #if defined AltitudeHoldBaro
           baroAltitudeToHoldTarget -= ALTITUDE_BUMP_SPEED;
@@ -106,6 +111,11 @@ void processAltitudeHold()
             sonarAltitudeToHoldTarget = newalt;
           }
         #endif
+      }
+
+      //set holdtarget to Rpi sent when in Rpi mode
+      if(RPiMode == AUTO_MODE) {
+        baroAltitudeToHoldTarget = RPiAltitude;
       }
     }
     throttle = altitudeHoldThrottle + altitudeHoldThrottleCorrection + zDampeningThrottleCorrection;

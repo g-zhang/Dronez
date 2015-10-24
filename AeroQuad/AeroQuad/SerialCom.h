@@ -294,21 +294,29 @@ void readSerialCommand() {
         fastTransfer = OFF;
       break;
 
-    case 'T':
+    case 'T': //change modes
       switch ((int)readFloatSerial()) {
       case 0:
-        RPiMode = 'M';
+        RPiMode = MANUAL_MODE;
         break;
 
       case 1:
-        RPiMode = 'A';
+        RPiMode = AUTO_MODE;
         break;
 
       case 2:
-        RPiMode = 'L';
+        RPiMode = AUTO_MODE2;
         break;
       }
       break;
+
+    case 'S': //receive flight commands from RPi
+      RPiPITCH = (int)readFloatSerial();
+      RPiROLL = (int)readFloatSerial();
+      RPiHeading = readFloatSerial();
+      RPiAltitude = readFloatSerial();
+      break;
+
     }
   }
 }
@@ -693,10 +701,52 @@ void sendSerialTelemetry() {
     break;
 
   case 'w':
+    //auto flight pi state
     PrintValueComma(RPiMode);
     PrintValueComma(RPiHeading);
     PrintValueComma(RPiAltitude);
-    PrintValueComma(RPiXAXIS);
+    PrintValueComma(RPiPITCH);
+    PrintValueComma(RPiROLL);
+    //battery state
+    #if defined (BattMonitor)
+      PrintValueComma((float)batteryData[0].voltage/100.0); // voltage internally stored at 10mV:s
+      #if defined (BM_EXTENDED)
+        PrintValueComma((float)batteryData[0].current/100.0);
+        PrintValueComma((float)batteryData[0].usedCapacity/1000.0);
+      #else
+        PrintDummyValues(2);
+      #endif
+    #else
+      PrintDummyValues(3);
+    #endif
+    //sensors state
+    for (byte axis = XAXIS; axis <= ZAXIS; axis++) {
+      PrintValueComma(gyroRate[axis]);
+    }
+    for (byte axis = XAXIS; axis <= ZAXIS; axis++) {
+      PrintValueComma(filteredAccel[axis]);
+    }
+    for (byte axis = XAXIS; axis <= ZAXIS; axis++) {
+      #if defined(HeadingMagHold)
+        PrintValueComma(getMagnetometerData(axis));
+      #else
+        PrintValueComma(0);
+      #endif
+    }
+    //more sensors
+    #if defined AltitudeHoldBaro || defined AltitudeHoldRangeFinder
+      #if defined AltitudeHoldBaro
+        PrintValueComma(getBaroAltitude());
+      #elif defined AltitudeHoldRangeFinder
+        PrintValueComma(rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX] != INVALID_RANGE ? rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX] : 0.0);
+      #endif
+      PrintValueComma((int)altitudeHoldState);
+    #else
+      PrintValueComma(0);
+      PrintValueComma(0);
+    #endif
+    PrintValueComma(getHeading());
+
     SERIAL_PRINTLN();
     queryType = 'X';
     break;
