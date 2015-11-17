@@ -12,9 +12,6 @@ public class SharedVars
     public static char[] sendBuffer;
     public static char[] receiveBuffer;
 
-
-
-
     public SharedVars()
     {
     }

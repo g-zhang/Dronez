@@ -26,6 +26,7 @@ namespace DroneUI2._0
 {
     public partial class Form1 : Form
     {
+        public Xbee xbee = new Xbee();
         private int numMarkers = 0;
 
         GMap.NET.PointLatLng lastPoint;
@@ -38,6 +39,19 @@ namespace DroneUI2._0
             lastPoint = new GMap.NET.PointLatLng(42.292315, -83.715531);
             gmap.MouseDoubleClick += new MouseEventHandler(MainMap_MouseDoubleClick);
             DroneTerminal.AppendText("Drone Battery: 98%" + Environment.NewLine);
+        }
+
+        public void UpdateValues()
+        {
+            //Print current GPS position to the terminal
+            DroneTerminal.AppendText("Current GPS: " + SharedVars.sensorData.currentGPS.x + ","  + SharedVars.sensorData.currentGPS.y + "," + SharedVars.sensorData.currentGPS.z);
+            //Update flight mode value
+            textBox1.Text = "Current Flight Mode: " + SharedVars.flightMode.ToString();
+            //Update Live video feed pic
+            liveVideoFeedBox.Image = SharedVars.videoFeedImage;
+            //Jump to current GPS position on map
+            gmap.Position = new GMap.NET.PointLatLng(SharedVars.sensorData.currentGPS.x, SharedVars.sensorData.currentGPS.y);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -74,6 +88,8 @@ namespace DroneUI2._0
             GMap.NET.PointLatLng point = gmap.FromLocalToLatLng(e.X, e.Y);
             addMarker(point.Lat, point.Lng);
 
+            sendGpsPoint(point.Lng, point.Lat);
+
         }
 
         private void addMarker(double X, double Y)
@@ -102,7 +118,6 @@ namespace DroneUI2._0
             lastPoint = coors;
             gmap.Zoom++;
             gmap.Zoom--;
-
 
         }
 
@@ -154,6 +169,19 @@ namespace DroneUI2._0
                 double yVal = Double.Parse(ManWayY.Text);
                 addMarker(xVal, yVal);
             }
+        }
+        
+        private void sendGpsPoint(double x, double y)
+        {
+            Coordinate toSend;
+            toSend.x = x;
+            toSend.y = y;
+            toSend.z = 0;
+            Console.WriteLine("Sending GPS point");
+            xbee.send<Coordinate>(toSend, 'g');
+
+
+
         }
     }
 }
