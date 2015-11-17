@@ -58,24 +58,30 @@ namespace DroneUI2._0
         {
             textBox1.Text = "Current Flight Mode: Return to Operator";
             DroneTerminal.AppendText("Drone Returning to operator" + Environment.NewLine);
+            sendFlightMode(FlightMode.home);
         }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
             textBox1.Text = "Current Flight Mode: Computer Vision";
             DroneTerminal.AppendText("Entering Computer Vision Mode" + Environment.NewLine);
+             sendFlightMode(FlightMode.roadLineDetection);
         }
 
         private void button3_Click_1(object sender, EventArgs e)
         {
             textBox1.Text = "Current Flight Mode: GPS Waypoint";
             DroneTerminal.AppendText("Entering GPS Waypoint Mode" + Environment.NewLine);
+            sendFlightMode(FlightMode.gpsNav);
         }
 
+
+        //Manual Flight Button
         private void button4_Click_1(object sender, EventArgs e)
         {
             textBox1.Text = "Current Flight Mode: Manual Flight";
             DroneTerminal.AppendText("Entering Manual Flight" + Environment.NewLine);
+            sendFlightMode(FlightMode.manualFlight);
         }
 
         private void gMapControl1_Load(object sender, EventArgs e)
@@ -179,9 +185,18 @@ namespace DroneUI2._0
             toSend.z = 0;
             Console.WriteLine("Sending GPS point");
             xbee.send<Coordinate>(toSend, 'g');
-
-
-
         }
+
+        private void sendFlightMode(FlightMode mode)
+        {
+            int toSend = (int)mode;
+            xbee.send<int>(toSend, 'f');
+        }
+
+        public void updateVideoFeedImage(Image newPic)
+        {
+            pictureBox1.Image = newPic;
+        }
+
     }
 }

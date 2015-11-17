@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
@@ -9,6 +10,8 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Diagnostics;
+using DroneUI2;
 
 public class Picture { 
     public SerialPort _serialPort;
@@ -24,7 +27,7 @@ public class Xbee
     Allwork serial = new Allwork();
     //Info pack = new Info();
     public Xbee() {
-        serial.send_recieve("COM6");
+        serial.send_recieve("COM8");
     }
     public void send<T>(T input, char code) where T : struct
     {
@@ -48,9 +51,11 @@ class Allwork
     {
         if (_serialPort.IsOpen == true)
         {
+
             Console.WriteLine("recieved");
             try
             {
+                Stopwatch watch = new Stopwatch();
                 while(_serialPort.Read(buffer, 0, 1) > 0){
                     bool restart = true;
                     int temp = buffer[0];
@@ -60,6 +65,7 @@ class Allwork
                     if (buffer[0] == 169 && state == 4){
                         state++;
                         restart = false;
+                        watch.Start();
                     }
                     else if (state == 5) {
                         if (buffer[0] == 22)
@@ -75,6 +81,8 @@ class Allwork
                             state++;
                             if (i_data == size || type == 'p'){
                                 Console.WriteLine("Parsing");
+                                watch.Stop();
+                                long time = watch.ElapsedMilliseconds;
                                 int value = parse.input(data, size, type);
                                 if (value > -2) {
                                     if (value == -1) {
@@ -87,6 +95,7 @@ class Allwork
                             else{
                                 Console.WriteLine("Data Wrong size :(");
                             }
+                            type = '0';
                             state = 0;
                             i_data = 0;
                         }
@@ -188,6 +197,8 @@ class Allwork
 
 class Parser {
     public int input(byte[] data, int size, char type){
+        Form form1 = Application.OpenForms["Form1"];
+        
         if (type == 'i') {
             int_parse(data, size);
         }
@@ -204,6 +215,10 @@ class Parser {
             System.Buffer.BlockCopy(data, 0, pic, 0, size);
             try
             {
+                //Image image = Image.FromStream(new MemoryStream(pic), false, false);
+                //form1.updateVideoFeedImage(image);
+                //picturebox1.image = image;
+                
                 using (Image image = Image.FromStream(new MemoryStream(pic), false, false))
                 {
                     image.Save("output.jpg", ImageFormat.Jpeg);  // Or Png

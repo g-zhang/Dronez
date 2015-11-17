@@ -18,3 +18,19 @@ c:\users\connor\documents\visual studio 2013\Projects\DroneUI2.0\DroneUI2.0\bin\
 c:\users\connor\documents\visual studio 2013\Projects\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2._0.Form1.resources
 c:\users\connor\documents\visual studio 2013\Projects\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2.0.exe
 c:\users\connor\documents\visual studio 2013\Projects\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2.0.pdb
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\bin\Debug\DroneUI2.0.exe.config
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\Interop.ShockwaveFlashObjects.dll
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\AxInterop.ShockwaveFlashObjects.dll
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2.0.csproj.ResolveComReference.cache
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2.0.exe
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2.0.pdb
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\bin\Debug\DroneUI2.0.exe
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\bin\Debug\DroneUI2.0.pdb
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\bin\Debug\GMap.NET.Core.xml
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\bin\Debug\GMap.NET.WindowsForms.xml
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\bin\Debug\Interop.ShockwaveFlashObjects.dll
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\bin\Debug\AxInterop.ShockwaveFlashObjects.dll
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2.0.csprojResolveAssemblyReference.cache
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2._0.Form1.resources
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2._0.Properties.Resources.resources
+C:\Users\maxgo_000\Google Drive\github\Dronez\DroneUI2.0\DroneUI2.0\obj\Debug\DroneUI2.0.csproj.GenerateResource.Cache
