@@ -1,8 +1,8 @@
 ﻿public struct Coordinate
 {
-    double x;
-    double y;
-    double z;
+    public double x;
+    public double y;
+    public double z;
 };
 
 public struct SensorData
