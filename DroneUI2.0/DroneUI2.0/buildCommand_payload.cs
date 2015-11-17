@@ -13,7 +13,7 @@ public struct Payload{
 public Payload pay; 
 
 
-public void build_statuspayload(void){ 
+public void buildCommand_payload(void){ 
 
 
 			lock(SharedVars.flightMode)
