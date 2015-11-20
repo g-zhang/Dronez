@@ -69,7 +69,7 @@ long nvrReadLong(int address) {
     byte longByte[4];
     unsigned short longUShort[2];
     long longVal;
-  } longOut;  
+  } longOut;
 
 #ifdef EEPROM_USES_16BIT_WORDS
   for (int i = 0; i < 2; i++) {
@@ -80,7 +80,7 @@ long nvrReadLong(int address) {
     longOut.longByte[i] = EEPROM.read(address + i);
   }
 #endif
-    
+
   return longOut.longVal;
 }
 
@@ -89,10 +89,10 @@ void nvrWriteLong(long value, int address) {
     byte longByte[4];
     unsigned short longUShort[2];
     long longVal;
-  } longIn;  
+  } longIn;
 
   longIn.longVal = value;
-  
+
 #ifdef EEPROM_USES_16BIT_WORDS
   for (int i = 0; i < 2; i++) {
     EEPROM.write(address + 2*i, longIn.longUShort[i]);
@@ -165,7 +165,7 @@ void initializeEEPROM() {
     PID[SONAR_ALTITUDE_HOLD_PID_IDX].windupGuard = 25.0; //this prevents the 0.1 I term to rise too far
   #endif
 
-  
+
   #if defined AltitudeHoldBaro || defined AltitudeHoldRangeFinder
     minThrottleAdjust = -50.0;
     maxThrottleAdjust = 50.0; //we don't want it to be able to take over totally
@@ -175,7 +175,7 @@ void initializeEEPROM() {
     altitudeHoldBump = 90;
     altitudeHoldPanicStickMovement = 250;
   #endif
-  
+
   initializePlatformSpecificAccelCalibration();
 
   windupGuard = 1000.0;
@@ -190,7 +190,7 @@ void initializeEEPROM() {
       PID[i].windupGuard = windupGuard;
     #endif
   }
-    
+
   receiverXmitFactor = 1.0;
   minArmedThrottle = 1150;
   // AKA - old setOneG not in SI - accel->setOneG(500);
@@ -202,10 +202,10 @@ void initializeEEPROM() {
   }
   receiverSmoothFactor[ZAXIS] = 0.5;
 
-  flightMode = RATE_FLIGHT_MODE;
+  flightMode = ATTITUDE_FLIGHT_MODE;
   headingHoldConfig = ON;
   aref = 5.0; // Use 3.0 if using a v1.7 shield or use 2.8 for an AeroQuad Shield < v1.7
-  
+
   // Battery Monitor
   #ifdef BattMonitor
     batteryMonitorAlarmVoltage = 3.33;
@@ -218,7 +218,7 @@ void initializeEEPROM() {
     maxRangeFinderRange = 4.5;
     minRangeFinderRange = 0.0;
   #endif
-  
+
   #if defined (UseGPSNavigator)
     missionNbPoint = 0;
     PID[GPSROLL_PID_IDX].P = 0.8;
@@ -241,8 +241,8 @@ void initializeEEPROM() {
   // Camera Control
   #ifdef CameraControl
     cameraMode = 1;
-    mCameraPitch = 1273.2;    
-    mCameraRoll = 636.6;    
+    mCameraPitch = 1273.2;
+    mCameraRoll = 636.6;
     mCameraYaw = 318.3;
     servoCenterPitch = 1500;
     servoCenterRoll = 1500;
@@ -270,7 +270,7 @@ void readEEPROM() {
   readPID(ATTITUDE_GYRO_YAXIS_PID_IDX, LEVEL_GYRO_PITCH_PID_GAIN_ADR);
 
   rotationSpeedFactor = readFloat(ROTATION_SPEED_FACTOR_ARD);
-  
+
   // Leaving separate PID reads as commented for now
   // Previously had issue where EEPROM was not reading right data
   #if defined AltitudeHoldBaro || defined AltitudeHoldRangeFinder
@@ -278,7 +278,7 @@ void readEEPROM() {
     PID[BARO_ALTITUDE_HOLD_PID_IDX].windupGuard = readFloat(ALTITUDE_WINDUP_ADR);
     #if defined AltitudeHoldBaro
       baroSmoothFactor = readFloat(ALTITUDE_SMOOTH_ADR);
-    #endif  
+    #endif
     altitudeHoldBump = readFloat(ALTITUDE_BUMP_ADR);
     altitudeHoldPanicStickMovement = readFloat(ALTITUDE_PANIC_ADR);
     minThrottleAdjust = readFloat(ALTITUDE_MIN_THROTTLE_ADR);
@@ -292,14 +292,14 @@ void readEEPROM() {
     magBias[YAXIS]  = readFloat(YAXIS_MAG_BIAS_ADR);
     magBias[ZAXIS]  = readFloat(ZAXIS_MAG_BIAS_ADR);
   #endif
-  
+
   // Battery Monitor
   #ifdef BattMonitor
     batteryMonitorAlarmVoltage = readFloat(BATT_ALARM_VOLTAGE_ADR);
     batteryMonitorThrottleTarget = readFloat(BATT_THROTTLE_TARGET_ADR);
     batteryMonitorGoingDownTime = readFloat(BATT_DOWN_TIME_ADR);
   #endif
-  
+
   windupGuard = readFloat(WINDUPGUARD_ADR);
   // AKA - added so that each PID has its own windupGuard, will need to be removed once each PID's range is established and put in the EEPROM
   for (byte i = XAXIS; i < LAST_PID_IDX; i++ ) {
@@ -309,9 +309,9 @@ void readEEPROM() {
       }
     #else
       PID[i].windupGuard = windupGuard;
-    #endif      
+    #endif
   }
-    
+
   minArmedThrottle = readFloat(MINARMEDTHROTTLE_ADR);
   aref = readFloat(AREF_ADR);
   flightMode = readFloat(FLIGHTMODE_ADR);
@@ -323,19 +323,19 @@ void readEEPROM() {
     readPID(GPSROLL_PID_IDX, GPSROLL_PID_GAIN_ADR);
     readPID(GPSPITCH_PID_IDX, GPSPITCH_PID_GAIN_ADR);
     readPID(GPSYAW_PID_IDX, GPSYAW_PID_GAIN_ADR);
-    
+
     for (byte location = 0; location < MAX_WAYPOINTS; location++) {
       waypoint[location].longitude = readLong(WAYPOINT_ADR[location].longitude);
       waypoint[location].latitude = readLong(WAYPOINT_ADR[location].latitude);
       waypoint[location].altitude = readLong(WAYPOINT_ADR[location].altitude);
-    }    
+    }
   #endif
 
   // Camera Control
   #ifdef CameraControl
     cameraMode = readFloat(CAMERAMODE_ADR);
     mCameraPitch = readFloat(MCAMERAPITCH_ADR);
-    mCameraRoll = readFloat(MCAMERAROLL_ADR);    
+    mCameraRoll = readFloat(MCAMERAROLL_ADR);
     mCameraYaw = readFloat(MCAMERAYAW_ADR);
     servoCenterPitch = readFloat(SERVOCENTERPITCH_ADR);
     servoCenterRoll = readFloat(SERVOCENTERROLL_ADR);
@@ -350,7 +350,7 @@ void readEEPROM() {
       servoTXChannels = readFloat(SERVOTXCHANNELS_ADR);
       servoActualCenter = readFloat(SERVOCENTERPITCH_ADR);
     #endif
-  #endif   
+  #endif
 }
 
 void writeEEPROM(){
@@ -363,9 +363,9 @@ void writeEEPROM(){
   writePID(HEADING_HOLD_PID_IDX, HEADING_PID_GAIN_ADR);
   writePID(ATTITUDE_GYRO_XAXIS_PID_IDX, LEVEL_GYRO_ROLL_PID_GAIN_ADR);
   writePID(ATTITUDE_GYRO_YAXIS_PID_IDX, LEVEL_GYRO_PITCH_PID_GAIN_ADR);
-  
+
   writeFloat(rotationSpeedFactor,ROTATION_SPEED_FACTOR_ARD);
-  
+
   #if defined AltitudeHoldBaro
     writePID(BARO_ALTITUDE_HOLD_PID_IDX, ALTITUDE_PID_GAIN_ADR);
     writeFloat(PID[BARO_ALTITUDE_HOLD_PID_IDX].windupGuard, ALTITUDE_WINDUP_ADR);
@@ -390,7 +390,7 @@ void writeEEPROM(){
     writeFloat(50, ALTITUDE_MAX_THROTTLE_ADR);
     writeFloat(0.1, ALTITUDE_SMOOTH_ADR);
   #endif
-  
+
   #ifdef HeadingMagHold
     writeFloat(magBias[XAXIS], XAXIS_MAG_BIAS_ADR);
     writeFloat(magBias[YAXIS], YAXIS_MAG_BIAS_ADR);
@@ -411,7 +411,7 @@ void writeEEPROM(){
   writeFloat(headingHoldConfig, HEADINGHOLD_ADR);
   writeFloat(accelOneG, ACCEL_1G_ADR);
   writeFloat(SOFTWARE_VERSION, SOFTWARE_VERSION_ADR);
-  
+
   // Battery Monitor
   #ifdef BattMonitor
     writeFloat(batteryMonitorAlarmVoltage, BATT_ALARM_VOLTAGE_ADR);
@@ -427,25 +427,25 @@ void writeEEPROM(){
     writeFloat(0, RANGE_FINDER_MAX_ADR);
     writeFloat(0, RANGE_FINDER_MIN_ADR);
   #endif
-  
+
   #if defined (UseGPSNavigator)
     writeFloat(missionNbPoint, GPS_MISSION_NB_POINT_ADR);
     writePID(GPSROLL_PID_IDX, GPSROLL_PID_GAIN_ADR);
     writePID(GPSPITCH_PID_IDX, GPSPITCH_PID_GAIN_ADR);
     writePID(GPSYAW_PID_IDX, GPSYAW_PID_GAIN_ADR);
-    
+
     for (byte location = 0; location < MAX_WAYPOINTS; location++) {
       writeLong(waypoint[location].longitude, WAYPOINT_ADR[location].longitude);
       writeLong(waypoint[location].latitude, WAYPOINT_ADR[location].latitude);
       writeLong(waypoint[location].altitude, WAYPOINT_ADR[location].altitude);
-    }       
+    }
   #endif
 
     // Camera Control
   #ifdef CameraControl
     writeFloat(cameraMode, CAMERAMODE_ADR);
     writeFloat(mCameraPitch, MCAMERAPITCH_ADR);
-    writeFloat(mCameraRoll, MCAMERAROLL_ADR);    
+    writeFloat(mCameraRoll, MCAMERAROLL_ADR);
     writeFloat(mCameraYaw, MCAMERAYAW_ADR);
     writeFloat(servoCenterPitch, SERVOCENTERPITCH_ADR);
     writeFloat(servoCenterRoll, SERVOCENTERROLL_ADR);
@@ -459,7 +459,7 @@ void writeEEPROM(){
     #ifdef CameraTXControl
       writeFloat(servoTXChannels, SERVOTXCHANNELS_ADR);
     #endif
-  #endif 
+  #endif
   sei(); // Restart interrupts
 }
 
@@ -477,7 +477,7 @@ void initSensorsZeroFromEEPROM() {
 }
 
 void storeSensorsZeroToEEPROM() {
-  
+
   // Store accel data to EEPROM
   writeFloat(accelOneG, ACCEL_1G_ADR);
   // Accel Cal
@@ -491,7 +491,7 @@ void storeSensorsZeroToEEPROM() {
 
 void initReceiverFromEEPROM() {
   receiverXmitFactor = readFloat(XMITFACTOR_ADR);
-  
+
   for(byte channel = XAXIS; channel < LASTCHANNEL; channel++) {
     receiverSlope[channel] = readFloat(RECEIVER_DATA[channel].slope);
     receiverOffset[channel] = readFloat(RECEIVER_DATA[channel].offset);
@@ -500,4 +500,3 @@ void initReceiverFromEEPROM() {
 }
 
 #endif // _AQ_DATA_STORAGE_H_
-

@@ -50,9 +50,9 @@ void processAltitudeHold()
   // http://aeroquad.com/showthread.php?359-Stable-flight-logic...&p=10325&viewfull=1#post10325
 
   //turn on altitudehold when set set to auto mode
-  if(RPiMode == AUTO_MODE) {
-    altitudeHoldState = ON;
-  }
+  // if(RPiMode == AUTO_MODE) {
+    // altitudeHoldState = ON;
+  // }
 
   if (altitudeHoldState == ON) {
     int altitudeHoldThrottleCorrection = INVALID_THROTTLE_CORRECTION;
@@ -115,7 +115,10 @@ void processAltitudeHold()
 
       //set holdtarget to Rpi sent when in Rpi mode
       if(RPiMode == AUTO_MODE) {
-        baroAltitudeToHoldTarget = RPiAltitude;
+		#if defined AltitudeHoldBaro
+			baroAltitudeToHoldTarget += RPiAltitude;
+			RPiAltitude = 0.0;
+		#endif
       }
     }
     throttle = altitudeHoldThrottle + altitudeHoldThrottleCorrection + zDampeningThrottleCorrection;

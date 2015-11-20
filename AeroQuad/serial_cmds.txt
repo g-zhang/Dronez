@@ -1,9 +1,15 @@
 free chars available for serial commands (case sensitive):
 w - Read flightmode val
 RPiMode, RPiHeading, RPiAltitude, RPiPITCH, RPiROLL, battvolt, battamp, battused, gyrox, gyroy, gyroz, accelx, accely, accelz, magx, magy, magz, baroalt, altholdstate, heading,
+
+RPiMode, battvolt, battamp, battused, accelx, accely, accelz, baroalt, heading,
+
+
 20 vals
 Q
-R
-S
+R - ack to flight Command
+RPiMode, RPiHeading, RPiAltitude, RPiPITCH, RPiROLL,
+S - send flight Command
+
 T - Set flightmode val
 Y

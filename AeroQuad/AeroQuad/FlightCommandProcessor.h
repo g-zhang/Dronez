@@ -3,19 +3,19 @@
  www.AeroQuad.com
  Copyright (c) 2012 Ted Carancho.  All rights reserved.
  An Open Source Arduino based multicopter.
- 
- This program is free software: you can redistribute it and/or modify 
- it under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License, or 
- (at your option) any later version. 
- 
- This program is distributed in the hope that it will be useful, 
- but WITHOUT ANY WARRANTY; without even the implied warranty of 
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- GNU General Public License for more details. 
- 
- You should have received a copy of the GNU General Public License 
- along with this program. If not, see <http://www.gnu.org/licenses/>. 
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 // FlightCommandProcessor is responsible for decoding transmitter stick combinations
@@ -63,7 +63,7 @@
         }
         altitudeHoldState = ON;
       }
-    } 
+    }
     else {
       isAltitudeHoldInitialized = false;
       altitudeHoldState = OFF;
@@ -117,11 +117,11 @@
 #if defined (UseGPSNavigator)
   void processGpsNavigationStateFromReceiverCommand() {
     // Init home command
-    if (motorArmed == OFF && 
+    if (motorArmed == OFF &&
         receiverCommand[THROTTLE] < MINCHECK && receiverCommand[ZAXIS] < MINCHECK &&
         receiverCommand[YAXIS] > MAXCHECK && receiverCommand[XAXIS] > MAXCHECK &&
         haveAGpsLock()) {
-  
+
       homePosition.latitude = currentPosition.latitude;
       homePosition.longitude = currentPosition.longitude;
       homePosition.altitude = DEFAULT_HOME_ALTITUDE;
@@ -135,10 +135,10 @@
         gpsYawAxisCorrection = 0;
         isGpsNavigationInitialized = true;
       }
-  
+
       positionHoldState = OFF;         // disable the position hold while navigating
       isPositionHoldInitialized = false;
-  
+
       navigationState = ON;
     }
     else if (receiverCommand[AUX1] < 1250) {  // Enter in position hold state
@@ -146,26 +146,26 @@
         gpsRollAxisCorrection = 0;
         gpsPitchAxisCorrection = 0;
         gpsYawAxisCorrection = 0;
-  
+
         positionHoldPointToReach.latitude = currentPosition.latitude;
         positionHoldPointToReach.longitude = currentPosition.longitude;
         positionHoldPointToReach.altitude = getBaroAltitude();
         isPositionHoldInitialized = true;
       }
-  
+
       isGpsNavigationInitialized = false;  // disable navigation
       navigationState = OFF;
-  
+
       positionHoldState = ON;
     }
     else {
       // Navigation and position hold are disabled
       positionHoldState = OFF;
       isPositionHoldInitialized = false;
-  
+
       navigationState = OFF;
       isGpsNavigationInitialized = false;
-  
+
       gpsRollAxisCorrection = 0;
       gpsPitchAxisCorrection = 0;
       gpsYawAxisCorrection = 0;
@@ -192,7 +192,7 @@ void processZeroThrottleFunctionFromReceiverCommand() {
       batteryMonitorStartThrottle = 0;
       batteyMonitorThrottleCorrection = 0.0;
     #endif
-  }    
+  }
 
   // Zero Gyro and Accel sensors (left stick lower left, right stick lower right corner)
   if ((receiverCommand[ZAXIS] < MINCHECK) && (receiverCommand[XAXIS] > MAXCHECK) && (receiverCommand[YAXIS] < MINCHECK)) {
@@ -202,7 +202,7 @@ void processZeroThrottleFunctionFromReceiverCommand() {
     calibrateKinematics();
     zeroIntegralError();
     pulseMotors(3);
-  }   
+  }
 
   // Arm motors (left stick lower right corner)
   if (receiverCommand[ZAXIS] > MAXCHECK && motorArmed == OFF && safetyCheck == ON) {
@@ -220,14 +220,14 @@ void processZeroThrottleFunctionFromReceiverCommand() {
 
     #ifdef OSD
       notifyOSD(OSD_CENTER|OSD_WARN, "!MOTORS ARMED!");
-    #endif  
+    #endif
 
     zeroIntegralError();
 
   }
   // Prevents accidental arming of motor output if no transmitter command received
   if (receiverCommand[ZAXIS] > MINCHECK) {
-    safetyCheck = ON; 
+    safetyCheck = ON;
   }
 }
 
@@ -236,14 +236,14 @@ void processZeroThrottleFunctionFromReceiverCommand() {
 
 /**
  * readPilotCommands
- * 
+ *
  * This function is responsible to read receiver
  * and process command from the users
  */
 void readPilotCommands() {
 
-  readReceiver(); 
-  
+  readReceiver();
+
   if (receiverCommand[THROTTLE] < MINCHECK) {
     processZeroThrottleFunctionFromReceiverCommand();
   }
@@ -255,13 +255,13 @@ void readPilotCommands() {
   }
 
     // Check Mode switch for Acro or Stable
-    if (receiverCommand[MODE] > 1500) {
+    if (receiverCommand[MODE] < 1750) {
         flightMode = ATTITUDE_FLIGHT_MODE;
     }
     else {
         flightMode = RATE_FLIGHT_MODE;
     }
-    
+
     if (previousFlightMode != flightMode) {
       zeroIntegralError();
       previousFlightMode = flightMode;
@@ -271,7 +271,7 @@ void readPilotCommands() {
   #if defined AltitudeHoldBaro || defined AltitudeHoldRangeFinder
     processAltitudeHoldStateFromReceiverCommand();
   #endif
-  
+
   #if defined (AutoLanding)
     processAutoLandingStateFromReceiverCommand();
   #endif
@@ -282,4 +282,3 @@ void readPilotCommands() {
 }
 
 #endif // _AQ_FLIGHT_COMMAND_READER_
-

@@ -88,9 +88,19 @@ void readReceiver();
 void readReceiver()
 {
   for(byte channel = XAXIS; channel < lastReceiverChannel; channel++) {
-
     // Apply receiver calibration adjustment
     receiverData[channel] = (receiverSlope[channel] * getRawChannelValue(channel)) + receiverOffset[channel];
+  }
+  
+   //set custom receiver values when in auto mode
+  if(RPiMode == AUTO_MODE) {
+    //set our pitch
+    receiverData[YAXIS] = RPiPITCH;
+    //set our yaw
+    receiverData[ZAXIS] = RPiYAW;
+  }
+  
+  for(byte channel = XAXIS; channel < lastReceiverChannel; channel++) {
     // Smooth the flight control receiver inputs
     receiverCommandSmooth[channel] = filterSmooth(receiverData[channel], receiverCommandSmooth[channel], receiverSmoothFactor[channel]);
   }
@@ -102,14 +112,6 @@ void readReceiver()
   // No xmitFactor reduction applied for throttle, mode and AUX
   for (byte channel = THROTTLE; channel < lastReceiverChannel; channel++) {
     receiverCommand[channel] = receiverCommandSmooth[channel];
-  }
-
-  //set custom receiver values when in auto mode
-  if(RPiMode == AUTO_MODE) {
-    //set our roll
-    receiverCommand[XAXIS] = RPiROLL;
-    //set our pitch
-    receiverCommand[YAXIS] = RPiPITCH;
   }
 }
 

@@ -111,10 +111,6 @@ void processHeading()
     float receiverSiData = (receiverCommand[ZAXIS] - receiverZero[ZAXIS]) * (2.5 * PWM2RAD);
   #endif
 
-  //set the heading to Rpi commanded when when in RPi mode
-  if(RPiMode == AUTO_MODE) {
-    receiverSiData = RPiHeading;
-  }
   const float commandedYaw = constrain(receiverSiData + radians(headingHold), -PI, PI);
   motorAxisCommandYaw = updatePID(commandedYaw, gyroRate[ZAXIS], &PID[ZAXIS_PID_IDX]);
 }
