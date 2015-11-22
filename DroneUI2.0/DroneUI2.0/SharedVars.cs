@@ -11,6 +11,7 @@ public class SharedVars
     public static FlightMode flightMode;
     public static char[] sendBuffer;
     public static char[] receiveBuffer;
+    public static Coordinate currentGps;
 
     public SharedVars()
     {

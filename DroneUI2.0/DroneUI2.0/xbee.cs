@@ -9,6 +9,9 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
+using DroneUI2;
+using DroneUI2._0;
 
 public class Picture { 
     public SerialPort _serialPort;
@@ -21,10 +24,16 @@ public class Picture {
 
 public class Xbee
 {
-    Allwork serial = new Allwork();
+    private Form1 form;
+    Allwork serial;
     //Info pack = new Info();
     public Xbee() {
         serial.send_recieve("COM6");
+    }
+    public Xbee(Form1 formIn)
+    {
+        form = formIn;
+        serial = new Allwork(form);
     }
     public void send<T>(T input, char code) where T : struct
     {
@@ -37,13 +46,23 @@ class Allwork
     public int state = 0;
     public int size;
     public char type;
+    private Form1 form; 
     //public Pic_in pic =  new Pic_in();
     byte[] buffer = new byte[5];
     byte[] data = new byte[5000];
     int i_data = 0;
-    public Parser parse = new Parser();
+    public Parser parse;
     SortedDictionary<int, byte[]> sent_mes = new SortedDictionary<int, byte[]>();
     int which_mess = 0;
+    public Allwork()
+    {
+
+    }
+    public Allwork(Form1 formIn)
+    {
+        form = formIn;
+        parse = new Parser(form);
+    }
     private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
     {
         if (_serialPort.IsOpen == true)
@@ -187,6 +206,12 @@ class Allwork
 }
 
 class Parser {
+    private Form1 form;
+    public Parser(Form1 formIn)
+    {
+        form = formIn;
+    }
+
     public int input(byte[] data, int size, char type){
         if (type == 'i') {
             int_parse(data, size);
@@ -206,7 +231,7 @@ class Parser {
             {
                 using (Image image = Image.FromStream(new MemoryStream(pic), false, false))
                 {
-                    image.Save("output.jpg", ImageFormat.Jpeg);  // Or Png
+                    SharedVars.videoFeedImage = image;
                 }
             }
             catch
@@ -214,6 +239,7 @@ class Parser {
                 Console.WriteLine("error picture corrupted!");
             }
         }
+        form.UpdateValues();
         return -2;
     }
     void int_parse(byte[] data, int size)
@@ -225,6 +251,16 @@ class Parser {
     {
         gps_info temp = ByteArrayToStructure<gps_info>(data, size);
 
+    }
+    void status_parse(byte[] data, int size)
+    {
+        StatusPayload payload = ByteArrayToStructure<StatusPayload>(data, size);
+        SharedVars.currentGps = payload.currentGPS;
+        SharedVars.sensorData.accelermatorData = payload.accData;
+        SharedVars.sensorData.batteryLevel = payload.batteryLevel;
+        SharedVars.sensorData.gyroData = payload.gyroData;
+        SharedVars.sensorData.magData = payload.magData;
+        SharedVars.flightMode = payload.flightMode;
     }
     public static T ByteArrayToStructure<T>(byte[] buffer, int size) where T : struct
     {

@@ -26,7 +26,7 @@ namespace DroneUI2._0
 {
     public partial class Form1 : Form
     {
-        public Xbee xbee = new Xbee();
+        public Xbee xbee;
         private int numMarkers = 0;
 
         GMap.NET.PointLatLng lastPoint;
@@ -39,6 +39,7 @@ namespace DroneUI2._0
             lastPoint = new GMap.NET.PointLatLng(42.292315, -83.715531);
             gmap.MouseDoubleClick += new MouseEventHandler(MainMap_MouseDoubleClick);
             DroneTerminal.AppendText("Drone Battery: 98%" + Environment.NewLine);
+            xbee = new Xbee(this);
         }
 
         public void UpdateValues()
