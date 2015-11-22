@@ -14,7 +14,7 @@ public struct SensorData
     public int batteryLevel;
 };
 
-public enum FlightMode { gpsNav, roadLineDetection, returnHome, landNow};
+public enum FlightMode { gpsNav, roadLineDetection, returnHome, landNow, manual};
 
 public struct StatusPayload
 {
