@@ -12,6 +12,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Diagnostics;
 using DroneUI2;
+using DroneUI2._0;
 
 public class Picture { 
     public SerialPort _serialPort;
@@ -24,10 +25,17 @@ public class Picture {
 
 public class Xbee
 {
-    Allwork serial = new Allwork();
+    private Form1 form;
+    Allwork serial;
     //Info pack = new Info();
     public Xbee() {
-        serial.send_recieve("COM8");
+        serial.send_recieve("COM11");
+    }
+    public Xbee(Form1 formIn)
+    {
+        form = formIn;
+        serial = new Allwork(form);
+        serial.send_recieve("COM11");
     }
     public void send<T>(T input, char code) where T : struct
     {
@@ -38,15 +46,26 @@ class Allwork
 {
     public SerialPort _serialPort;
     public int state = 0;
+    public int state2 = 0;
     public int size;
     public char type;
+    private Form1 form; 
     //public Pic_in pic =  new Pic_in();
     byte[] buffer = new byte[5];
     byte[] data = new byte[5000];
     int i_data = 0;
-    public Parser parse = new Parser();
+    public Parser parse;
     SortedDictionary<int, byte[]> sent_mes = new SortedDictionary<int, byte[]>();
     int which_mess = 0;
+    public Allwork()
+    {
+
+    }
+    public Allwork(Form1 formIn)
+    {
+        form = formIn;
+        parse = new Parser(form);
+    }
     private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
     {
         if (_serialPort.IsOpen == true)
@@ -59,9 +78,6 @@ class Allwork
                 while(_serialPort.Read(buffer, 0, 1) > 0){
                     bool restart = true;
                     int temp = buffer[0];
-                    if (i_data == 4380) {
-                        Console.WriteLine("Parse that bitch");
-                    }
                     if (buffer[0] == 169 && state == 4){
                         state++;
                         restart = false;
@@ -109,7 +125,6 @@ class Allwork
                             data[i_data] = (byte)buffer[0];
                             int temp2 = data[i_data];
                             i_data++;
-                            Console.WriteLine("test");
                         }
                         else if(restart)
                         {
@@ -134,10 +149,20 @@ class Allwork
                         }
                         state++;
                     }
-                    else if (buffer[0] == 133 && state < 3)
+                    if (buffer[0] == 133)
                     {
-                        state++;
+                        state2++;
+                        if (state2 == 3)
+                        {
+                            state = state2;
+                            i_data = 0;
+                            size = 0;
+                            state2 = 0;
+
+                        }
                     }
+                    else
+                        state2 = 0;
                 }
             }
             catch (TimeoutException)
@@ -196,32 +221,41 @@ class Allwork
 }
 
 class Parser {
+    private Form1 form;
+    public Parser(Form1 formIn)
+    {
+        form = formIn;
+    }
+
     public int input(byte[] data, int size, char type){
         Form form1 = Application.OpenForms["Form1"];
-        
-        if (type == 'i') {
+
+        if (type == 'i')
+        {
             int_parse(data, size);
+            Console.WriteLine("parsed int");
         }
-        else if (type == 'g') {
+        else if (type == 'g')
+        {
             gps_parse(data, size);
+            Console.WriteLine("parsed g");
         }
-        else if (type == 'r') {
-            return ByteArrayToStructure<int>(data, size);      
+        else if (type == 'r')
+        {
+            Console.WriteLine("parsed r");
+            return ByteArrayToStructure<int>(data, size);
         }
         else if (type == 'p')
         {
-            Console.WriteLine("woo");
             byte[] pic = new byte[size];
             System.Buffer.BlockCopy(data, 0, pic, 0, size);
             try
             {
-                //Image image = Image.FromStream(new MemoryStream(pic), false, false);
-                //form1.updateVideoFeedImage(image);
-                //picturebox1.image = image;
-                
+
                 using (Image image = Image.FromStream(new MemoryStream(pic), false, false))
                 {
-                    image.Save("output.jpg", ImageFormat.Jpeg);  // Or Png
+                    SharedVars.videoFeedImage = image;
+                    Console.WriteLine("pic recieved!");
                 }
             }
             catch
@@ -229,6 +263,11 @@ class Parser {
                 Console.WriteLine("error picture corrupted!");
             }
         }
+        else if (type == 's') {
+            status_parse(data, size);
+            Console.WriteLine("parsed s");
+        }
+        form.UpdateValues();
         return -2;
     }
     void int_parse(byte[] data, int size)
@@ -240,6 +279,16 @@ class Parser {
     {
         gps_info temp = ByteArrayToStructure<gps_info>(data, size);
 
+    }
+    void status_parse(byte[] data, int size)
+    {
+        StatusPayload payload = ByteArrayToStructure<StatusPayload>(data, size);
+        SharedVars.currentGps = payload.currentGPS;
+        SharedVars.sensorData.accelermatorData = payload.accData;
+        SharedVars.sensorData.batteryLevel = payload.batteryLevel;
+        SharedVars.sensorData.gyroData = payload.gyroData;
+        SharedVars.sensorData.magData = payload.magData;
+        SharedVars.flightMode = payload.flightMode;
     }
     public static T ByteArrayToStructure<T>(byte[] buffer, int size) where T : struct
     {

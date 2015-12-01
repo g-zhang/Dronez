@@ -51,10 +51,13 @@
 
   //Control variables
   int RPiPITCH = 1500;
-  int RPiROLL = 1500;
+  int RPiYAW = 1500;
 
-  float RPiHeading = 0.0; //radians
   float RPiAltitude = 0.0;
+
+  //time variables
+  #define RPi_TIMEOUT 2000000
+  long int RPiLastContact = 0; //time of last RPi command received
 
 //////////////////////////////////////////////////////
 

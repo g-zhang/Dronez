@@ -311,12 +311,36 @@ void readSerialCommand() {
       break;
 
     case 'S': //receive flight commands from RPi
+      switch ((int)readFloatSerial()) {
+      case 0:
+        RPiMode = MANUAL_MODE;
+        break;
+
+      case 1:
+        RPiMode = AUTO_MODE;
+        break;
+
+      case 2:
+        RPiMode = AUTO_MODE2;
+        break;
+      }
       RPiPITCH = (int)readFloatSerial();
-      RPiROLL = (int)readFloatSerial();
-      RPiHeading = readFloatSerial();
+      RPiYAW = (int)readFloatSerial();
       RPiAltitude = readFloatSerial();
+
+      //set last activity time
+      RPiLastContact = micros();
       break;
 
+    }
+  }
+}
+
+//function resets back to AQ manual mode if a command hasn't been received in a while
+void checkRPiConnection() {
+  if(RPiMode == AUTO_MODE) {
+    if(micros() - RPiLastContact > RPi_TIMEOUT) {
+      RPiMode = MANUAL_MODE;
     }
   }
 }
@@ -700,13 +724,17 @@ void sendSerialTelemetry() {
     #endif
     break;
 
-  case 'w':
-    //auto flight pi state
+  case 'R': //ack to pi flight command
     PrintValueComma(RPiMode);
-    PrintValueComma(RPiHeading);
-    PrintValueComma(RPiAltitude);
     PrintValueComma(RPiPITCH);
-    PrintValueComma(RPiROLL);
+    PrintValueComma(RPiYAW);
+    PrintValueComma(RPiAltitude);
+    SERIAL_PRINTLN();
+    queryType = 'X';
+    break;
+
+  case 'w':
+    PrintValueComma(RPiMode);
     //battery state
     #if defined (BattMonitor)
       PrintValueComma((float)batteryData[0].voltage/100.0); // voltage internally stored at 10mV:s
@@ -721,17 +749,7 @@ void sendSerialTelemetry() {
     #endif
     //sensors state
     for (byte axis = XAXIS; axis <= ZAXIS; axis++) {
-      PrintValueComma(gyroRate[axis]);
-    }
-    for (byte axis = XAXIS; axis <= ZAXIS; axis++) {
       PrintValueComma(filteredAccel[axis]);
-    }
-    for (byte axis = XAXIS; axis <= ZAXIS; axis++) {
-      #if defined(HeadingMagHold)
-        PrintValueComma(getMagnetometerData(axis));
-      #else
-        PrintValueComma(0);
-      #endif
     }
     //more sensors
     #if defined AltitudeHoldBaro || defined AltitudeHoldRangeFinder
@@ -740,9 +758,7 @@ void sendSerialTelemetry() {
       #elif defined AltitudeHoldRangeFinder
         PrintValueComma(rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX] != INVALID_RANGE ? rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX] : 0.0);
       #endif
-      PrintValueComma((int)altitudeHoldState);
     #else
-      PrintValueComma(0);
       PrintValueComma(0);
     #endif
     PrintValueComma(getHeading());

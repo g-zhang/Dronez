@@ -26,7 +26,7 @@ namespace DroneUI2._0
 {
     public partial class Form1 : Form
     {
-        public Xbee xbee = new Xbee();
+        public Xbee xbee;
         private int numMarkers = 0;
 
         GMap.NET.PointLatLng lastPoint;
@@ -39,12 +39,13 @@ namespace DroneUI2._0
             lastPoint = new GMap.NET.PointLatLng(42.292315, -83.715531);
             gmap.MouseDoubleClick += new MouseEventHandler(MainMap_MouseDoubleClick);
             DroneTerminal.AppendText("Drone Battery: 98%" + Environment.NewLine);
+            xbee = new Xbee(this);
         }
 
         public void UpdateValues()
         {
             //Print current GPS position to the terminal
-            DroneTerminal.AppendText("Current GPS: " + SharedVars.sensorData.currentGPS.x + ","  + SharedVars.sensorData.currentGPS.y + "," + SharedVars.sensorData.currentGPS.z);
+            DroneTerminal.AppendText("Current GPS: " + SharedVars.sensorData.currentGPS.x + "," + SharedVars.sensorData.currentGPS.y + "," + SharedVars.sensorData.currentGPS.z);
             //Update flight mode value
             textBox1.Text = "Current Flight Mode: " + SharedVars.flightMode.ToString();
             //Update Live video feed pic
@@ -65,7 +66,7 @@ namespace DroneUI2._0
         {
             textBox1.Text = "Current Flight Mode: Computer Vision";
             DroneTerminal.AppendText("Entering Computer Vision Mode" + Environment.NewLine);
-             sendFlightMode(FlightMode.roadLineDetection);
+            sendFlightMode(FlightMode.roadLineDetection);
         }
 
         private void button3_Click_1(object sender, EventArgs e)
@@ -100,7 +101,8 @@ namespace DroneUI2._0
 
         private void addMarker(double X, double Y)
         {
-            GMap.NET.PointLatLng coors =  new GMap.NET.PointLatLng(X, Y);
+            sendGpsPoint(X, Y);
+            GMap.NET.PointLatLng coors = new GMap.NET.PointLatLng(X, Y);
             GMapOverlay markersOverlay = new GMapOverlay("markers");
             GMarkerCross marker = new GMarkerCross(coors);
             gmap.UpdateMarkerLocalPosition(marker);
@@ -134,7 +136,7 @@ namespace DroneUI2._0
 
         private void futurePointsList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string[] coordinate = futurePointsList.SelectedItem.ToString().Split(',',')');
+            string[] coordinate = futurePointsList.SelectedItem.ToString().Split(',', ')');
             gmap.Position = new GMap.NET.PointLatLng(Convert.ToDouble(coordinate[1]), Convert.ToDouble(coordinate[2]));
         }
 
@@ -150,7 +152,7 @@ namespace DroneUI2._0
 
         private void button5_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dia1= new SaveFileDialog();
+            SaveFileDialog dia1 = new SaveFileDialog();
             dia1.DefaultExt = "txt";
             dia1.Filter =
             "Text files (*.txt)|*.txt|All files (*.*)|*.*";
@@ -176,7 +178,7 @@ namespace DroneUI2._0
                 addMarker(xVal, yVal);
             }
         }
-        
+
         private void sendGpsPoint(double x, double y)
         {
             Coordinate toSend;
@@ -186,6 +188,7 @@ namespace DroneUI2._0
             Console.WriteLine("Sending GPS point");
             xbee.send<Coordinate>(toSend, 'g');
         }
+
 
         private void sendFlightMode(FlightMode mode)
         {

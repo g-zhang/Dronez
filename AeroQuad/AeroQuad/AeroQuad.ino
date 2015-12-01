@@ -1561,6 +1561,7 @@ void process1HzTask() {
 
     sendSerialHeartbeat();
   #endif
+  checkRPiConnection();
 }
 
 /*******************************************************************

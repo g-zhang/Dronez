@@ -15,3 +15,14 @@ public struct SensorData
 };
 
 public enum FlightMode { manualFlight, gpsNav, roadLineDetection, landNow, home};
+
+public struct StatusPayload
+{
+    public FlightMode flightMode;
+    public int batteryLevel;
+    public Coordinate gyroData;
+    public Coordinate accData;
+    public Coordinate magData;
+    public Coordinate currentGPS;
+};
+
