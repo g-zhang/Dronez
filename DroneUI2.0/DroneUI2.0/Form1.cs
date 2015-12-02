@@ -45,13 +45,44 @@ namespace DroneUI2._0
         public void UpdateValues()
         {
             //Print current GPS position to the terminal
-            DroneTerminal.AppendText("Current GPS: " + SharedVars.sensorData.currentGPS.x + "," + SharedVars.sensorData.currentGPS.y + "," + SharedVars.sensorData.currentGPS.z);
+            if (DroneTerminal.InvokeRequired)
+            {
+                DroneTerminal.Invoke(new MethodInvoker(delegate { DroneTerminal.AppendText("Current GPS: " + SharedVars.sensorData.currentGPS.x + "," + SharedVars.sensorData.currentGPS.y + "," + SharedVars.sensorData.currentGPS.z + '\n');
+                        DroneTerminal.AppendText("Current Gyro: " + SharedVars.sensorData.gyroData.x + "," + SharedVars.sensorData.gyroData.y + "," + SharedVars.sensorData.gyroData.z + '\n');
+                }));
+            }
+            else
+            {
+                DroneTerminal.AppendText("Current GPS: " + SharedVars.sensorData.currentGPS.x + "," + SharedVars.sensorData.currentGPS.y + "," + SharedVars.sensorData.currentGPS.z + '\n' +
+                    "Current Gyro: " + SharedVars.sensorData.gyroData.x + "," + SharedVars.sensorData.gyroData.y + "," + SharedVars.sensorData.gyroData.z + '\n');
+            }
             //Update flight mode value
-            textBox1.Text = "Current Flight Mode: " + SharedVars.flightMode.ToString();
-            //Update Live video feed pic
-            liveVideoFeedBox.Image = SharedVars.videoFeedImage;
-            //Jump to current GPS position on map
-            gmap.Position = new GMap.NET.PointLatLng(SharedVars.sensorData.currentGPS.x, SharedVars.sensorData.currentGPS.y);
+            if (textBox1.InvokeRequired)
+            {
+                textBox1.Invoke(new MethodInvoker(delegate { textBox1.Text = "Current Flight Mode: " + SharedVars.flightMode.ToString(); }));
+            }
+            else
+            {
+                textBox1.Text = "Current Flight Mode: " + SharedVars.flightMode.ToString();
+            }
+            if (liveVideoFeedBox.InvokeRequired)
+            {
+                liveVideoFeedBox.Invoke(new MethodInvoker(delegate { liveVideoFeedBox.Image = SharedVars.videoFeedImage; }));
+            }
+            else
+            {
+                //Update Live video feed pic
+                liveVideoFeedBox.Image = SharedVars.videoFeedImage;
+            }
+            if (gmap.InvokeRequired)
+            {
+                gmap.Invoke(new MethodInvoker(delegate { gmap.Position = new GMap.NET.PointLatLng(SharedVars.sensorData.currentGPS.x, SharedVars.sensorData.currentGPS.y); }));
+            }
+            else
+            {
+                //Jump to current GPS position on map
+                gmap.Position = new GMap.NET.PointLatLng(SharedVars.sensorData.currentGPS.x, SharedVars.sensorData.currentGPS.y);
+            }
 
         }
 

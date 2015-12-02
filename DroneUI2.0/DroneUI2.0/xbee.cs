@@ -252,11 +252,11 @@ class Parser {
             try
             {
 
-                using (Image image = Image.FromStream(new MemoryStream(pic), false, false))
-                {
-                    SharedVars.videoFeedImage = image;
-                    Console.WriteLine("pic recieved!");
-                }
+                Image image = Image.FromStream(new MemoryStream(pic), false, false);
+                
+                SharedVars.videoFeedImage = image;
+                Console.WriteLine("pic recieved!");
+                
             }
             catch
             {
