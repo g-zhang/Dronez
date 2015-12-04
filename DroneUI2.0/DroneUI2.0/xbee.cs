@@ -29,13 +29,13 @@ public class Xbee
     Allwork serial;
     //Info pack = new Info();
     public Xbee() {
-        serial.send_recieve("COM11");
+        serial.send_recieve("COM15");
     }
     public Xbee(Form1 formIn)
     {
         form = formIn;
         serial = new Allwork(form);
-        serial.send_recieve("COM11");
+        serial.send_recieve("COM15");
     }
     public void send<T>(T input, char code) where T : struct
     {
@@ -284,11 +284,14 @@ class Parser {
     {
         StatusPayload payload = ByteArrayToStructure<StatusPayload>(data, size);
         SharedVars.currentGps = payload.currentGPS;
+        SharedVars.sensorData.currentGPS = payload.currentGPS;
         SharedVars.sensorData.accelermatorData = payload.accData;
         SharedVars.sensorData.batteryLevel = payload.batteryLevel;
         SharedVars.sensorData.gyroData = payload.gyroData;
         SharedVars.sensorData.magData = payload.magData;
         SharedVars.flightMode = payload.flightMode;
+       // Console.WriteLine(SharedVars.currentGps.x);
+      //  Console.WriteLine(payload.currentGPS.x);
     }
     public static T ByteArrayToStructure<T>(byte[] buffer, int size) where T : struct
     {
@@ -313,6 +316,7 @@ class Reverse_parse{
         return result;
     }
 }
+
 struct gps_info
 {
     public double latitude;

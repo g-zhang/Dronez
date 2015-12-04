@@ -47,7 +47,7 @@ namespace DroneUI2._0
             //Print current GPS position to the terminal
             if (DroneTerminal.InvokeRequired)
             {
-                DroneTerminal.Invoke(new MethodInvoker(delegate { DroneTerminal.AppendText("Current GPS: " + SharedVars.sensorData.currentGPS.x + "," + SharedVars.sensorData.currentGPS.y + "," + SharedVars.sensorData.currentGPS.z + '\n');
+                DroneTerminal.Invoke(new MethodInvoker(delegate { DroneTerminal.AppendText("Current GPS: " + SharedVars.currentGps.x + "," + SharedVars.currentGps.y + "," + SharedVars.currentGps.z + '\n');
                         DroneTerminal.AppendText("Current Gyro: " + SharedVars.sensorData.gyroData.x + "," + SharedVars.sensorData.gyroData.y + "," + SharedVars.sensorData.gyroData.z + '\n');
                 }));
             }
