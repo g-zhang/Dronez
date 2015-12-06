@@ -52,7 +52,7 @@ class Allwork
     private Form1 form; 
     //public Pic_in pic =  new Pic_in();
     byte[] buffer = new byte[5];
-    byte[] data = new byte[5000];
+    byte[] data = new byte[10000];
     int i_data = 0;
     public Parser parse;
     SortedDictionary<int, byte[]> sent_mes = new SortedDictionary<int, byte[]>();
@@ -76,6 +76,13 @@ class Allwork
             {
                 Stopwatch watch = new Stopwatch();
                 while(_serialPort.Read(buffer, 0, 1) > 0){
+                    if (i_data >= 10000) {
+                        i_data = 0;
+                        state = 0;
+                        state2 = 0;
+                        size = 0;
+                        Console.WriteLine("data to big dropped");
+                    }
                     bool restart = true;
                     int temp = buffer[0];
                     if (buffer[0] == 169 && state == 4){
