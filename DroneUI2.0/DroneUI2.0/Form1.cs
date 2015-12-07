@@ -74,6 +74,15 @@ namespace DroneUI2._0
                 //Update Live video feed pic
                 liveVideoFeedBox.Image = SharedVars.videoFeedImage;
             }
+            if (pictureBox1.InvokeRequired)
+            {
+                pictureBox1.Invoke(new MethodInvoker(delegate { pictureBox1.Image = SharedVars.objectDetectionImage; }));
+            }
+            else
+            {
+                //Update Live video feed pic
+                pictureBox1.Image = SharedVars.objectDetectionImage;
+            }
             if (gmap.InvokeRequired)
             {
                 gmap.Invoke(new MethodInvoker(delegate { gmap.Position = new GMap.NET.PointLatLng(SharedVars.sensorData.currentGPS.x, SharedVars.sensorData.currentGPS.y); }));
